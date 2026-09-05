@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVA X</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b0b0f;
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      height: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #292932;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .welcome {
+      text-align: center;
+      margin: auto;
+      color: #aaa;
+    }
+
+    .welcome h1 {
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .message {
+      max-width: 82%;
+      padding: 12px 15px;
+      border-radius: 15px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .user {
+      align-self: flex-end;
+      background: #30303a;
+    }
+
+    .ai {
+      align-self: flex-start;
+      background: #19191f;
+    }
+
+    .input-area {
+      padding: 14px;
+      border-top: 1px solid #292932;
+      display: flex;
+      gap: 10px;
+      background: #0b0b0f;
+    }
+
+    #messageInput {
+      flex: 1;
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid #383842;
+      border-radius: 13px;
+      background: #17171d;
+      color: white;
+      font-size: 16px;
+      outline: none;
+    }
+
+    #messageInput::placeholder {
+      color: #888;
+    }
+
+    #sendButton {
+      padding: 0 20px;
+      border: none;
+      border-radius: 13px;
+      background: white;
+      color: black;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #sendButton:disabled {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    NOVA X
+  </div>
+
+  <div id="chat">
+    <div class="welcome" id="welcome">
+      <h1>NOVA X 🚀</h1>
+      <p>How can I help you?</p>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <input
+      id="messageInput"
+      type="text"
+      placeholder="Message NOVA X..."
+      autocomplete="off"
+    >
+
+    <button id="sendButton">
+      Send
+    </button>
+  </div>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("messageInput");
+    const sendButton = document.getElementById("sendButton");
+    const welcome = document.getElementById("welcome");
+
+    async function sendMessage() {
+      const message = input.value.trim();
+
+      if (!message) return;
+
+      welcome.style.display = "none";
+
+      addMessage(message, "user");
+
+      input.value = "";
+      sendButton.disabled = true;
+
+      const aiMessage = addMessage("Thinking...", "ai");
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: message
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Request failed");
+        }
+
+        aiMessage.textContent = data.reply;
+
+      } catch (error) {
+        console.error(error);
+        aiMessage.textContent =
+          "NOVA X couldn't connect to the AI right now.";
+      }
+
+      sendButton.disabled = false;
+      input.focus();
+    }
+
+    function addMessage(text, type) {
+      const message = document.createElement("div");
+
+      message.className = "message " + type;
+      message.textContent = text;
+
+      chat.appendChild(message);
+      chat.scrollTop = chat.scrollHeight;
+
+      return message;
+    }
+
+    sendButton.addEventListener("click", sendMessage);
+
+    input.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+
+</body>
+</html>
