@@ -37,7 +37,7 @@ app.post("/api/chat", async (req, res) => {
           "X-Title": "NOVA X"
         },
         body: JSON.stringify({
-          model: "openai/gpt-oss-20b", 
+          model: "openai/free", 
           messages: [
             {
               role: "system",
