@@ -178,7 +178,8 @@
       } catch (error) {
         console.error(error);
         aiMessage.textContent =
-          "NOVA X couldn't connect to the AI right now.";
+          "Error: " + error.message;
+        
       }
 
       sendButton.disabled = false;
