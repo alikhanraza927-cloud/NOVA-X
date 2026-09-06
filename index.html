@@ -14,46 +14,134 @@
 
     body {
       font-family: Arial, sans-serif;
-      background: #0b0b0f;
+      background: #08080c;
       color: white;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
-      flex-direction: column;
     }
 
-    .header {
+    /* SIDEBAR */
+    .sidebar {
+      width: 230px;
+      min-height: 100vh;
+      background: #101016;
+      border-right: 1px solid #292932;
+      padding: 22px 14px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      padding: 5px 12px 25px;
+    }
+
+    .online {
+      color: #55e37a;
+      font-size: 12px;
+      margin-top: -18px;
+      margin-left: 13px;
+      margin-bottom: 25px;
+    }
+
+    .nav button {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 7px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #aaa;
+      text-align: left;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      background: #202027;
+      color: white;
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .topbar {
       height: 65px;
+      border-bottom: 1px solid #292932;
       display: flex;
       align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid #292932;
-      font-size: 22px;
+      padding: 0 20px;
       font-weight: bold;
     }
 
-    #chat {
+    .page {
       flex: 1;
+      display: none;
+      padding: 25px;
       overflow-y: auto;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .hero {
+      padding: 25px 0;
+    }
+
+    .hero h1 {
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      color: #999;
+    }
+
+    /* CARDS */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: #121219;
+      border: 1px solid #292932;
+      border-radius: 15px;
       padding: 20px;
+      min-height: 110px;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #999;
+      font-size: 14px;
+    }
+
+    /* CHAT */
+    #chat {
+      height: calc(100vh - 180px);
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 14px;
-    }
-
-    .welcome {
-      text-align: center;
-      margin: auto;
-      color: #aaa;
-    }
-
-    .welcome h1 {
-      color: white;
-      margin-bottom: 8px;
+      padding: 10px 0 20px;
     }
 
     .message {
       max-width: 82%;
-      padding: 12px 15px;
+      padding: 13px 15px;
       border-radius: 15px;
       line-height: 1.5;
       white-space: pre-wrap;
@@ -70,11 +158,9 @@
     }
 
     .input-area {
-      padding: 14px;
-      border-top: 1px solid #292932;
       display: flex;
       gap: 10px;
-      background: #0b0b0f;
+      padding-top: 10px;
     }
 
     #messageInput {
@@ -89,65 +175,278 @@
       outline: none;
     }
 
-    #messageInput::placeholder {
-      color: #888;
-    }
-
-    #sendButton {
+    #sendButton,
+    .actionButton {
       padding: 0 20px;
-      border: none;
+      border: 0;
       border-radius: 13px;
       background: white;
       color: black;
       font-weight: bold;
-      font-size: 15px;
       cursor: pointer;
     }
 
     #sendButton:disabled {
-      opacity: 0.5;
+      opacity: .5;
+    }
+
+    /* MOBILE */
+    @media (max-width: 700px) {
+      .sidebar {
+        width: 72px;
+        padding: 15px 8px;
+      }
+
+      .logo {
+        font-size: 16px;
+        padding: 5px;
+        text-align: center;
+      }
+
+      .online {
+        font-size: 0;
+        text-align: center;
+        margin: 0 0 20px;
+      }
+
+      .online::after {
+        content: "●";
+        font-size: 14px;
+        color: #55e37a;
+      }
+
+      .nav button {
+        font-size: 0;
+        text-align: center;
+      }
+
+      .nav button::first-letter {
+        font-size: 20px;
+      }
+
+      .page {
+        padding: 18px;
+      }
+
+      .hero h1 {
+        font-size: 27px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="header">
-    NOVA X
-  </div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">NOVA X</div>
+    <div class="online">● Online</div>
 
-  <div id="chat">
-    <div class="welcome" id="welcome">
-      <h1>NOVA X 🚀</h1>
-      <p>How can I help you?</p>
+    <div class="nav">
+      <button class="active" onclick="showPage('home', this)">🏠 Home</button>
+      <button onclick="showPage('chatPage', this)">💬 Chat</button>
+      <button onclick="showPage('talk', this)">🎙️ Talk</button>
+      <button onclick="showPage('goals', this)">🎯 Goals</button>
+      <button onclick="showPage('memory', this)">🧠 Memory</button>
+      <button onclick="showPage('commands', this)">⚡ Commands</button>
+      <button onclick="showPage('progress', this)">📊 Progress</button>
+      <button onclick="showPage('saiyan', this)">🥷 Saiyan X</button>
     </div>
-  </div>
+  </aside>
 
-  <div class="input-area">
-    <input
-      id="messageInput"
-      type="text"
-      placeholder="Message NOVA X..."
-      autocomplete="off"
-    >
+  <!-- MAIN -->
+  <main class="main">
 
-    <button id="sendButton">
-      Send
-    </button>
-  </div>
+    <div class="topbar">
+      Personal AI Assistant
+    </div>
+
+    <!-- HOME -->
+    <section id="home" class="page active">
+      <div class="hero">
+        <h1>NOVA X 🚀</h1>
+        <p>Your personal AI assistant.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>💬 Chat</h3>
+          <p>Talk with NOVA X using AI.</p>
+        </div>
+
+        <div class="card">
+          <h3>🎯 Goals</h3>
+          <p>Track the things you're working toward.</p>
+        </div>
+
+        <div class="card">
+          <h3>🧠 Memory</h3>
+          <p>Manage information NOVA X remembers.</p>
+        </div>
+
+        <div class="card">
+          <h3>⚡ Commands</h3>
+          <p>Access assistant actions.</p>
+        </div>
+
+        <div class="card">
+          <h3>📊 Progress</h3>
+          <p>See your progress and activity.</p>
+        </div>
+
+        <div class="card">
+          <h3>🥷 Saiyan X</h3>
+          <p>Activate your personal training mode.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAT -->
+    <section id="chatPage" class="page">
+      <div class="hero">
+        <h1>💬 Chat</h1>
+        <p>Talk to NOVA X.</p>
+      </div>
+
+      <div id="chat"></div>
+
+      <div class="input-area">
+        <input
+          id="messageInput"
+          type="text"
+          placeholder="Message NOVA X..."
+          autocomplete="off"
+        >
+        <button id="sendButton">Send</button>
+      </div>
+    </section>
+
+    <!-- TALK -->
+    <section id="talk" class="page">
+      <div class="hero">
+        <h1>🎙️ Talk</h1>
+        <p>Voice controls will live here.</p>
+      </div>
+
+      <div class="card">
+        <h3>Voice Assistant</h3>
+        <p>Speech recognition and voice responses will be connected next.</p>
+        <br>
+        <button class="actionButton" onclick="startVoice()">🎙️ Start Talking</button>
+      </div>
+    </section>
+
+    <!-- GOALS -->
+    <section id="goals" class="page">
+      <div class="hero">
+        <h1>🎯 Goals</h1>
+        <p>Your goals will be stored here.</p>
+      </div>
+
+      <div class="card">
+        <h3>Coming next</h3>
+        <p>Create goals, track completion and connect them to Saiyan X.</p>
+      </div>
+    </section>
+
+    <!-- MEMORY -->
+    <section id="memory" class="page">
+      <div class="hero">
+        <h1>🧠 Memory</h1>
+        <p>Manage NOVA X memory.</p>
+      </div>
+
+      <div class="card">
+        <h3>Memory system</h3>
+        <p>We'll add controlled memory storage without exposing your API key.</p>
+      </div>
+    </section>
+
+    <!-- COMMANDS -->
+    <section id="commands" class="page">
+      <div class="hero">
+        <h1>⚡ Commands</h1>
+        <p>Assistant actions.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>⏰ Reminders</h3>
+          <p>Reminder system coming next.</p>
+        </div>
+
+        <div class="card">
+          <h3>🌐 Web Search</h3>
+          <p>Search tools will be connected safely.</p>
+        </div>
+
+        <div class="card">
+          <h3>📄 Documents</h3>
+          <p>Generate useful documents.</p>
+        </div>
+
+        <div class="card">
+          <h3>💻 Coding</h3>
+          <p>Get coding assistance.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRESS -->
+    <section id="progress" class="page">
+      <div class="hero">
+        <h1>📊 Progress</h1>
+        <p>Track your activity.</p>
+      </div>
+
+      <div class="card">
+        <h3>NOVA X Progress</h3>
+        <p>Statistics and goal progress will appear here.</p>
+      </div>
+    </section>
+
+    <!-- SAIYAN X -->
+    <section id="saiyan" class="page">
+      <div class="hero">
+        <h1>🥷 Saiyan X</h1>
+        <p>Your dedicated training mode.</p>
+      </div>
+
+      <div class="card">
+        <h3>Saiyan X activated 💥</h3>
+        <p>What’s the 1 goal you’re training for this week?</p>
+        <br>
+        <button class="actionButton" onclick="activateSaiyan()">
+          Activate Mode
+        </button>
+      </div>
+    </section>
+
+  </main>
 
   <script>
     const chat = document.getElementById("chat");
     const input = document.getElementById("messageInput");
     const sendButton = document.getElementById("sendButton");
-    const welcome = document.getElementById("welcome");
+
+    function showPage(pageId, button) {
+      document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+      });
+
+      document.getElementById(pageId).classList.add("active");
+
+      document.querySelectorAll(".nav button").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+    }
 
     async function sendMessage() {
       const message = input.value.trim();
 
       if (!message) return;
-
-      welcome.style.display = "none";
 
       addMessage(message, "user");
 
@@ -176,10 +475,7 @@
         aiMessage.textContent = data.reply;
 
       } catch (error) {
-        console.error(error);
-        aiMessage.textContent =
-          "Error: " + error.message;
-        
+        aiMessage.textContent = "Error: " + error.message;
       }
 
       sendButton.disabled = false;
@@ -205,6 +501,14 @@
         sendMessage();
       }
     });
+
+    function startVoice() {
+      alert("Voice system is coming next.");
+    }
+
+    function activateSaiyan() {
+      alert("Saiyan X activated 💥");
+    }
   </script>
 
 </body>
